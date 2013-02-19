@@ -37,12 +37,12 @@ public class Polynomial {
 	}
 
 	/* evaluate the polynomial for a given x */
-	public BigDecimal evaluate(double x) {
-		double temp = x;
+	public BigDecimal evaluate(BigDecimal x) {
+		BigDecimal temp = new BigDecimal(x.toString());
 		BigDecimal result = new BigDecimal(0);
 		for (int i = 0; i < degree; i++) {
-			result = result.add(new BigDecimal(coefficients[i] * temp));
-			temp *= x;
+			result = result.add(temp.multiply(new BigDecimal(coefficients[i])));
+			temp = temp.multiply(x);
 		}
 		result = result.add(new BigDecimal(zerothCoefficient.toString()));
 		return result;
@@ -64,7 +64,7 @@ public class Polynomial {
 	public static void main(String[] args) {
 		Polynomial p = Polynomial.getRandomPolynomial(2, new BigInteger("1000"));
 		p.display();
-		System.out.println(p.evaluate(1));
+		System.out.println(p.evaluate(new BigDecimal(1)));
 	}
 
 }
