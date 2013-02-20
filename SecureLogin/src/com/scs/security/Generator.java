@@ -4,7 +4,7 @@ import java.math.BigInteger;
 import java.util.Random;
 
 public class Generator {
-	public static final int BIT_LENGTH = 160;
+	public static final int BIT_LENGTH = 256;
 	public static final BigInteger LARGE_PRIME = getLargePrime(BIT_LENGTH);
 	public static final BigInteger RANDOM_SEED = getRandomInteger(BIT_LENGTH);
 	
@@ -16,17 +16,13 @@ public class Generator {
 		return (new BigInteger(bitLength, new Random()));
 	}
 	
-	public static BigInteger getHPWD(){
-		int randomDivisor = (int)((Math.random() * 20) + 5); /* generate a random divisor between 5 and 25 */
-		BigInteger current = getRandomInteger(BIT_LENGTH);
-		current = current.divide(new BigInteger(String.valueOf(randomDivisor)));
-		return current;
+	public static BigInteger getHPWD(BigInteger Q){
+		return getRandomInteger(BIT_LENGTH).mod(Q);
 	}
 	
 	public static void main(String[] args){
-		BigInteger hpwd = Generator.getHPWD();
+		BigInteger hpwd = Generator.getHPWD(LARGE_PRIME);
 		System.out.println(hpwd);
 		System.out.println(Generator.LARGE_PRIME);
 	}
-
 }
