@@ -29,4 +29,5 @@ public class Constants {
 	 * decryption was successful or not
 	 */
 	public static final String TOTEM = "BECOOLHONEYBUNNY";
+	
 }
