@@ -40,7 +40,7 @@ public class InstructionTable {
 	}
 	
 	public InstructionTableEntry get(int i){
-		return entries.get(i - 1);
+		return entries.get(i);
 	}
 	
 }

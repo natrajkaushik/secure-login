@@ -1,5 +1,7 @@
 package com.scs.security;
 
+import java.math.BigInteger;
+
 public class Constants {
 	/**
 	 * Set of features
@@ -34,4 +36,8 @@ public class Constants {
 	public static final String TOTEM = "BECOOLHONEYBUNNY";
 	
 	public static final String HISTORY_FILE_PATH = "";
+	public static final String INSTRUCTION_TABLE_FILE_PATH = "";
+	
+	public static final BigInteger Q = Generator.LARGE_PRIME;
+	public static final BigInteger R = Generator.RANDOM_SEED;
 }

@@ -2,6 +2,7 @@ package com.scs.security;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.List;
 
 public class Polynomial {
 
@@ -53,7 +54,7 @@ public class Polynomial {
 	}
 	
 	/* returns polynomial from a set of (degree + 1) points on it */
-	public static Polynomial generatePolynomialFromPoints(Point[] points){
+	public static Polynomial generatePolynomialFromPoints(List<Point> points){
 		return null;
 	}
 
@@ -69,24 +70,29 @@ public class Polynomial {
 		}
 		System.out.println();
 	}
+	
+	public static Point getPoint(BigDecimal x, BigDecimal y){
+		Point p = new Point(x, y);
+		return p;
+	}
 
 	public static void main(String[] args) {
 		Polynomial p = Polynomial.getRandomPolynomial(2, new BigInteger("1000"));
 		p.display();
 		System.out.println(p.evaluate(new BigDecimal(1)));
 	}
-	
-	public class Point{
-		BigDecimal x;
-		BigDecimal y;
-		
-		public Point(BigDecimal x, BigDecimal y) {
-			super();
-			this.x = x;
-			this.y = y;
-		}
-		
-		
-	}
 
+}
+
+class Point{
+	BigDecimal x;
+	BigDecimal y;
+	
+	public Point(BigDecimal x, BigDecimal y) {
+		super();
+		this.x = x;
+		this.y = y;
+	}
+	
+	
 }
