@@ -11,6 +11,11 @@ public class Constants {
 			"How long will your session last?",
 			"How many people will you message?",
 			"How many browser plugins do you have installed?" };
+	
+	/**
+	 * Threshold values of the features 
+	 */
+	public static final long[] THRESHOLD_FEATURE_VALUES = {2, 8, 3, 20, 6, 20};
 
 	/**
 	 * Number of features

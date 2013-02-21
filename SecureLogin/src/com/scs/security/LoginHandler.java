@@ -4,7 +4,7 @@ package com.scs.security;
 public class LoginHandler {
 	
 	private String password;
-	private Long[] features = new Long[Constants.M];
+	private long[] features = new long[Constants.M];
 	
 	/* interact with the user and fetch the feature vector for the session */
 	private void getUserFeatures(){
@@ -17,12 +17,12 @@ public class LoginHandler {
 			System.out.println(Constants.QUESTIONS[i]);
 			answer = IOUtils.readFromConsole();
 			if(answer == null || answer.isEmpty()){
-				features[i] = null;
+				features[i] = Constants.THRESHOLD_FEATURE_VALUES[i];
 			}else{
 				try{
 					features[i] = Long.valueOf(answer);
 				}catch(NumberFormatException e){
-					features[i] = null;
+					features[i] = Constants.THRESHOLD_FEATURE_VALUES[i];;
 				}
 			}
 		}
