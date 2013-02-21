@@ -16,10 +16,8 @@ public class InstructionTable {
 		final InstructionTable iTable = new InstructionTable();
 		
 		IOUtils.readFile(filePath, new IOUtils.Callback() {
-			int count = 0;
-			
 			@Override
-			public void processData(String data) {
+			public void processLine(String data) {
 				/* each line in the instruction table has "i alpha(i) beta(i)" */
 				String[] tokens = data.split("\\s+");
 				InstructionTableEntry entry = new InstructionTableEntry(Integer.valueOf(tokens[0]), 
@@ -29,6 +27,15 @@ public class InstructionTable {
 		});
 		
 		return iTable;
+	}
+	
+	public static void writeTableToFile(InstructionTable iTable, String filePath) {
+		List<String> lines = new ArrayList<String>(iTable.entries.size());
+		for(InstructionTableEntry ite : iTable.entries){
+			String entry = new String(ite.getIndex() + " " + ite.getAlpha() + " " + ite.getBeta());
+			lines.add(entry);
+		}
+		IOUtils.writeToFile(lines, filePath);
 	}
 	
 	public static Position getPosition(long feature){
