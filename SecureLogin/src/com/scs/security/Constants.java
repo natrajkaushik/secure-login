@@ -11,22 +11,22 @@ public class Constants {
 		"How many emails will you exchange?",
 		"How long will your session last?",
 		"How many people will you message?",
-		"What is the time of the day?"
+		"How many browser plugins do you have installed?"
 	};
 	
 	/**
 	 * Number of features
 	 */
-	public static final int M = QUESTIONS.length;
+	public static final int M 					= QUESTIONS.length;
 	
 	/**
 	 * Number of previous successful logins stored
 	 */
-	public static final int H = 10;
+	public static final int H 					= 10;
 	
 	/**
 	 * String written to history file to know if
 	 * decryption was successful or not
 	 */
-	public static final String TOTEM = "BECOOLHONEYBUNNY";
+	public static final String TOTEM 			= "BECOOLHONEYBUNNY";
 }
