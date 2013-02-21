@@ -18,7 +18,7 @@ public class Authenticator {
 	/* statically initialize p_function */
 	static{
 		try{
-			p_function = new P_Function(Constants.R, Constants.Q);
+			p_function = new P_Function(Constants.R);
 		}catch(CryptoException e){
 			e.printStackTrace();
 		}
@@ -26,7 +26,7 @@ public class Authenticator {
 	public static boolean authenticate(String password, long[] features){
 		if(g_function == null){
 			try {
-				g_function = new G_Function(Constants.R, password, Constants.Q);
+				g_function = new G_Function(Constants.R, password);
 			} catch (CryptoException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

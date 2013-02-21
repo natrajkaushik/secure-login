@@ -8,6 +8,7 @@ import java.security.NoSuchAlgorithmException;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
+import com.scs.security.Crypto;
 import com.scs.security.misc.CryptoException;
 
 /**
@@ -19,9 +20,7 @@ import com.scs.security.misc.CryptoException;
  */
 public class G_Function extends KeyedHashFunction {
 	
-	public G_Function(BigInteger r, String pwd_a, BigInteger q) throws CryptoException {
-		this.q = q;
-		
+	public G_Function(BigInteger r, String pwd_a) throws CryptoException {
 		try {
 			sha256_HMAC = Mac.getInstance(HMAC_ALGO);
 		} catch (NoSuchAlgorithmException e) {
@@ -49,7 +48,7 @@ public class G_Function extends KeyedHashFunction {
 	private void initHmac(BigInteger r, BigInteger pwd) throws CryptoException {
 		BigInteger hmac_key = r.xor(pwd);
 		try {
-			sha256_HMAC.init(new SecretKeySpec(hmac_key.toByteArray(), HMAC_ALGO));
+			sha256_HMAC.init(new SecretKeySpec(Crypto.getKeyBytes(hmac_key, KEY_SIZE), HMAC_ALGO));
 		} catch (InvalidKeyException e) {
 			e.printStackTrace();
 			throw new CryptoException(String.format(KEY_EXPN_MSG, HMAC_ALGO));
