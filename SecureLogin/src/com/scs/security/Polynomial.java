@@ -30,6 +30,10 @@ public class Polynomial {
 	private void setZerothCoefficient(BigInteger zerothCoefficient){
 		this.zerothCoefficient = zerothCoefficient;
 	}
+	
+	public BigInteger getZerothCoefficient(){
+		return zerothCoefficient;
+	}
 
 	public Polynomial(int degree) {
 		this.degree = degree;
@@ -46,6 +50,11 @@ public class Polynomial {
 		}
 		result = result.add(new BigDecimal(zerothCoefficient.toString()));
 		return result;
+	}
+	
+	/* returns polynomial from a set of (degree + 1) points on it */
+	public static Polynomial generatePolynomialFromPoints(Point[] points){
+		return null;
 	}
 
 	public void display() {
@@ -65,6 +74,19 @@ public class Polynomial {
 		Polynomial p = Polynomial.getRandomPolynomial(2, new BigInteger("1000"));
 		p.display();
 		System.out.println(p.evaluate(new BigDecimal(1)));
+	}
+	
+	public class Point{
+		BigDecimal x;
+		BigDecimal y;
+		
+		public Point(BigDecimal x, BigDecimal y) {
+			super();
+			this.x = x;
+			this.y = y;
+		}
+		
+		
 	}
 
 }

@@ -7,6 +7,11 @@ import java.util.List;
 public class InstructionTable {
 	private List<InstructionTableEntry> entries = new ArrayList<InstructionTableEntry>(Constants.M); /* Instruction Table */
 	
+	public enum Position{
+		ALPHA,
+		BETA;
+	};
+	
 	public static InstructionTable loadTable(String filePath) {
 		final InstructionTable iTable = new InstructionTable();
 		
@@ -24,6 +29,10 @@ public class InstructionTable {
 		});
 		
 		return iTable;
+	}
+	
+	public static Position getPosition(long feature){
+		return Position.ALPHA;
 	}
 	
 	public boolean addEntry(InstructionTableEntry entry){

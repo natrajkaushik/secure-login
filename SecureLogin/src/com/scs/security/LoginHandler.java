@@ -3,6 +3,8 @@ package com.scs.security;
 /* main workflow of handling user login */
 public class LoginHandler {
 	
+	private static boolean INITIALIZED = false;
+	
 	private String password;
 	private long[] features = new long[Constants.M];
 	
@@ -31,8 +33,7 @@ public class LoginHandler {
 	/* returns true if user is successfully authenticated */
 	public boolean authenticate(){
 		getUserFeatures();
-		displayFeatures();
-		return false;
+		return Authenticator.authenticate(password, features);
 	}
 	
 	/* display features - test method */

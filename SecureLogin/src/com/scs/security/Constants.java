@@ -32,4 +32,6 @@ public class Constants {
 	 * not
 	 */
 	public static final String TOTEM = "BECOOLHONEYBUNNY";
+	
+	public static final String HISTORY_FILE_PATH = "";
 }
