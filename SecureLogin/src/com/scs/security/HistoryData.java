@@ -9,6 +9,9 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Random;
+
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 import com.scs.security.misc.BadPasswordException;
 import com.scs.security.misc.CryptoException;
@@ -29,20 +32,16 @@ public class HistoryData {
 	 */
 	private ArrayList<long[]> history;
 	
+	private DescriptiveStatistics[] stats;
+	
 	/**
 	 * Creates a new HistoryData object for new user
 	 * @param features first time feature values.
 	 */
 	public HistoryData(long[] features) {
 		history = new ArrayList<long[]>();
-		history.add(features);
-	}
-	
-	/**
-	 * @return number of feature vectors in HistoryData object
-	 */
-	public int numEntries(){
-		return history.size();
+		initStats();
+		addEntry(features);
 	}
 	
 	/**
@@ -53,9 +52,28 @@ public class HistoryData {
 	 */
 	private HistoryData(byte[] data) throws BadPasswordException {
 		history = new ArrayList<long[]>();
+		initStats();
 		if (!fromByteArray(data)) {
 			throw new BadPasswordException();
 		}
+	}
+	
+	/**
+	 * Initializes the statistics counter with window size equal to maximum
+	 * size of the history file.
+	 */
+	private void initStats() {
+		stats = new DescriptiveStatistics[Constants.M];
+		for (int i = 0; i < Constants.M; i++) {
+			stats[i] = new DescriptiveStatistics(Constants.H);
+		}
+	}
+	
+	/**
+	 * @return number of feature vectors in HistoryData object
+	 */
+	public int numEntries(){
+		return history.size();
 	}
 	
 	/**
@@ -112,6 +130,9 @@ public class HistoryData {
 			history.remove(history.size() - 1);
 		}
 		history.add(0, features);
+		for (int i = 0; i < Constants.M; i++) {
+			stats[i].addValue(features[i]);
+		}
 		return history.size();
 	}
 	
@@ -173,7 +194,7 @@ public class HistoryData {
 			for (int j = 0; j < Constants.M; j++) {
 				vector[j] = buf.getLong();
 			}
-			history.add(vector);
+			addEntry(vector);
 		}
 		return true;
 	}
@@ -195,7 +216,8 @@ public class HistoryData {
 		System.arraycopy(numEntries, 0, data, offset, 4);
 		offset += 4;
 		
-		for (long[] entry : history) {
+		for (int i = history.size()-1; i >= 0; i--) {
+			long[] entry = history.get(i);
 			for (int j = 0; j < Constants.M; j++) {
 				byte[] feature = ByteBuffer.allocate(8).putLong(entry[j]).array();
 				System.arraycopy(feature, 0, data, offset, 8);
@@ -210,18 +232,81 @@ public class HistoryData {
 	}
 	
 	/**
-	 * @param feature index
-	 * @return mean of feature value
+	 * Returns the mean value for the given index over all history data.
+	 * @param index the feature to get mean for
+	 * @return value the mean value
 	 */
 	public double getMean(int index){
-		return 0;
+		return stats[index].getMean();
 	}
 	
 	/**
-	 * @param feature index
-	 *@return standard deviation of feature value
+	 * Returns the standard deviation for the given index over all history data.
+	 * @param index the feature to get mean for
+	 * @return standard deviation of feature value
 	 */
 	public double getStandardDeviation(int index){
-		return 0;
+		return stats[index].getStandardDeviation();
+	}
+	
+	public static void main(String args[]) {
+		File file1 = new File("C:\\Users\\Sameer\\Desktop\\history1.file");
+		BigInteger b = new BigInteger(255, new Random());
+		Random r = new Random(System.currentTimeMillis());
+		long[] first = {1, 2, 3, 4, 5, 6};
+		long[][] val = new long[12][6];
+		System.out.println("0:\t1	2	3	4	5	6");
+		for (int i = 0; i < 12; i++) {
+			System.out.print(i+1 + ":\t");
+			for (int j = 0; j < 6; j++) {
+				val[i][j] = Math.abs(r.nextLong()) % 100;
+				System.out.print(val[i][j] + "\t");
+			}
+			System.out.println();
+		}
+		System.out.println();
+		HistoryData h = new HistoryData(first);
+		for (int i = 0; i < 5; i++) {
+			h.addEntry(val[i]);
+		}
+		h.persist(file1, b);
+		
+		System.out.println("Read 1:");
+		HistoryData l = HistoryData.loadHistory(file1, b);
+		if (l != null) {
+			l.print();
+		}
+		
+		for (int i = 5; i < 12; i++) {
+			l.addEntry(val[i]);
+		}
+		l.persist(file1, b);
+		
+		System.out.println("Read 2:");
+		HistoryData d = HistoryData.loadHistory(file1, b);
+		if (d != null) {
+			d.print();
+		}
+	}
+	
+	public void print() {
+		int i = 0;
+		for (long[] entry : history) {
+			System.out.print(++i + ":\t");
+			for (int j = 0; j < Constants.M; j++) {
+				System.out.print(entry[j] + "\t");
+			}
+			System.out.println();
+		}
+		System.out.print("AV:\t");
+		for (int j = 0; j < Constants.M; j++) {
+			System.out.print(stats[j].getMean() + "\t");
+		}
+		System.out.println();
+		System.out.print("SD:\t");
+		for (int j = 0; j < Constants.M; j++) {
+			System.out.print(stats[j].getStandardDeviation() + "\t");
+		}
+		System.out.println();
 	}
 }
