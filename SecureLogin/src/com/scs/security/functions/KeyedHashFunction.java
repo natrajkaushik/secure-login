@@ -20,6 +20,11 @@ public class KeyedHashFunction {
 
 	protected Mac sha256_HMAC;
 	
+	/**
+	 * Run the function over the specified input.
+	 * @param x input to the function
+	 * @return value of function for input.
+	 */
 	public BigInteger execute(int x) {
 		byte[] input = ByteBuffer.allocate(4).putInt(x).array();
 		byte[] result = sha256_HMAC.doFinal(input);
