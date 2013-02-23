@@ -23,6 +23,7 @@ public class Authenticator {
 			e.printStackTrace();
 		}
 	}
+	
 	public static boolean authenticate(String password, long[] features){
 		if(g_function == null){
 			try {
@@ -33,8 +34,7 @@ public class Authenticator {
 			}
 		}
 		
-		Polynomial recoveredPolynomial = computePolynomial(features, password);
-		BigInteger hpwd = recoveredPolynomial.getZerothCoefficient();
+		BigInteger hpwd = extractHardenedPwd(features, password);
 		
 		File historyFile = new File(Constants.HISTORY_FILE_PATH);
 		
@@ -50,7 +50,7 @@ public class Authenticator {
 	}
 	
 	/* determines polynomial from feature vector and password */
-	private static Polynomial computePolynomial(long[] features, String password) {
+	private static BigInteger extractHardenedPwd(long[] features, String password) {
 		List<Point> points = new LinkedList<Point>();
 		InstructionTable iTable = InstructionTable.loadTable(Constants.INSTRUCTION_TABLE_FILE_PATH);
 		for (int i = 0; i < features.length; i++) {
@@ -69,8 +69,7 @@ public class Authenticator {
 			}
 			points.add(new Point(x, y));
 		}
-		Polynomial p = Polynomial
-				.generatePolynomialFromPoints(points);
-		return p;
+		BigInteger hpwd = Polynomial.generateZerothCoefficientFromPoints(points);
+		return hpwd;
 	}
 }

@@ -2,6 +2,8 @@ package com.scs.security;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Polynomial {
@@ -53,9 +55,44 @@ public class Polynomial {
 		return result;
 	}
 	
-	/* returns polynomial from a set of (degree + 1) points on it */
-	public static Polynomial generatePolynomialFromPoints(List<Point> points){
-		return null;
+	/* returns zeroth coefficient of polynomial from a set of (degree + 1) points on it 
+	 * 
+	 * Not sure about the implementation - need to run this method to test if working
+	 * */
+	public static BigInteger generateZerothCoefficientFromPoints(List<Point> points){
+		List<BigDecimal> xValues = new ArrayList<BigDecimal>();
+		for(int i = 0; i < points.size(); i++){
+			xValues.add(points.get(i).x);
+		}
+		
+		List<BigDecimal> yValues = new ArrayList<BigDecimal>();
+		for(int i = 0; i < points.size(); i++){
+			yValues.add(points.get(i).y);
+		}
+		
+		/* Lagrange Interpolation */
+		BigDecimal sum = new BigDecimal("0");
+		for(int i = 0; i < points.size(); i++){
+			BigDecimal lambda = getLambda(xValues, i);
+			sum = sum.add(yValues.get(i).multiply(lambda));
+		}
+		
+		BigInteger result = sum.toBigInteger().mod(Constants.Q); /* this can cause trouble */
+		
+		return result;
+	}
+	
+	private static BigDecimal getLambda(List<BigDecimal> xValues, int index){
+		BigDecimal result = new BigDecimal(1);
+		
+		for(int i = 0; i < xValues.size(); i++){
+			BigDecimal current = xValues.get(i); 
+			if(i != index){
+				result = result.multiply(current.divide(current.subtract(xValues.get(index))));
+			}
+		}
+		
+		return result;
 	}
 
 	public void display() {
