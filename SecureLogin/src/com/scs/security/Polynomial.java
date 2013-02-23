@@ -3,7 +3,6 @@ package com.scs.security;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public class Polynomial {
@@ -17,6 +16,7 @@ public class Polynomial {
 									 */
 	private BigInteger zerothCoefficient;
 
+	/* generate a polynomial with randomly generated co-efficients with y(0) = hpwd */
 	public static Polynomial getRandomPolynomial(int degree, BigInteger hpwd) {
 		Polynomial p = new Polynomial(degree);
 		p.setRandomCoefficients();
@@ -82,6 +82,7 @@ public class Polynomial {
 		return result;
 	}
 	
+	/* generates lambda values for lagrange interpolation */
 	private static BigDecimal getLambda(List<BigDecimal> xValues, int index){
 		BigDecimal result = new BigDecimal(1);
 		

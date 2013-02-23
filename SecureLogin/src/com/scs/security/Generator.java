@@ -1,5 +1,6 @@
 package com.scs.security;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Random;
 
@@ -21,6 +22,10 @@ public class Generator {
 	/* returns a random hardened password < LARGE_PRIME */
 	public static BigInteger getHPWD(BigInteger Q){
 		return getRandomInteger(BIT_LENGTH).mod(Q);
+	}
+	
+	public static BigDecimal getRandomBigDecimal(){
+		return new BigDecimal(getRandomInteger(BIT_LENGTH).mod(Constants.Q));
 	}
 	
 	public static void main(String[] args){
