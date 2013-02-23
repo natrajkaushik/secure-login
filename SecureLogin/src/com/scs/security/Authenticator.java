@@ -3,9 +3,11 @@ package com.scs.security;
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.scs.security.InstructionTable.Position;
 import com.scs.security.functions.P_Function;
 import com.scs.security.functions.G_Function;
 import com.scs.security.misc.CryptoException;
@@ -14,6 +16,7 @@ public class Authenticator {
 
 	public static P_Function p_function;
 	public static G_Function g_function = null;
+	private static boolean INITIALIZED = false;
 
 	/* statically initialize p_function */
 	static {
@@ -23,7 +26,24 @@ public class Authenticator {
 			e.printStackTrace();
 		}
 	}
+	
+	/* Handle two workflows - 1) First time login 2) nth time login (n > 1) */
+	public static boolean _authenticate(String password, long[] features){
+		if(!INITIALIZED){
+			
+		}else{
+			
+		}
+		
+		return authenticate(password, features);
+	}
 
+	/**
+	 * 
+	 * @param password
+	 * @param current login attempt features
+	 * @return true if successfully authenticated
+	 */
 	public static boolean authenticate(String password, long[] features) {
 		if (g_function == null) {
 			try {
@@ -38,14 +58,17 @@ public class Authenticator {
 
 		File historyFile = new File(Constants.HISTORY_FILE_PATH);
 
-		HistoryData historyData = HistoryData.loadHistory(historyFile, hpwd);
-		if (historyData == null) {
+		HistoryData historyData = HistoryData.loadHistory(historyFile, hpwd); 
+		if (historyData == null) { /* returns null if decryption of history file fails*/
 			return false;
 		}
 
-		int historyFileSize = historyData.addEntry(features);
+		historyData.addEntry(features);
+		Position[] positions = computeFeatures(historyData);
+		
 		historyData.persist(historyFile, hpwd);
-
+		generateScheme(hpwd, positions);
+		
 		return true;
 	}
 
@@ -77,5 +100,38 @@ public class Authenticator {
 		BigInteger hpwd = Polynomial
 				.generateZerothCoefficientFromPoints(points);
 		return hpwd;
+	}
+	
+	/* computes the distinguishing features from History File Data  */
+	private static Position[] computeFeatures(HistoryData histData){
+		Position[] positions = new Position[Constants.M];
+		
+		if(histData == null || histData.numEntries() < Constants.H){
+			Arrays.fill(positions, Position.BOTH); /* If num of entries in history file < 10 */
+		}else{
+			double mean, sd;
+			for(int i = 0; i < Constants.M; i++){
+				mean = histData.getMean(i);
+				sd = histData.getStandardDeviation(i);
+				if(Constants.THRESHOLD_FEATURE_VALUES[i] - sd >= mean){
+					positions[i] = Position.ALPHA;
+				}
+				else if(Constants.THRESHOLD_FEATURE_VALUES[i] + sd <= mean){
+					positions[i] = Position.BETA;
+				}
+				else{
+					positions[i] = Position.BOTH;
+				}
+			}
+		}
+		
+		return positions;
+	}
+	
+	/* generate a new 1) Random Polynomial 2) Instruction Table and persist it to disk */
+	private static void generateScheme(BigInteger hpwd, Position[] positions){
+		Polynomial newPoly = Polynomial.getRandomPolynomial(Constants.M - 1, hpwd);
+		InstructionTable iTable = InstructionTable.generateInstructionTable(positions, newPoly);
+		InstructionTable.writeTableToFile(iTable, Constants.INSTRUCTION_TABLE_FILE_PATH);
 	}
 }

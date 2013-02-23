@@ -193,7 +193,9 @@ public class Crypto {
 			dec = decrypt(enc, key);
 	    	printByteArray("Decryption", dec);
 	    	System.out.println("Plaintext: " + new String(dec));
-		} catch (CryptoException | InvalidHmacException e) {
+		} catch (CryptoException e) {
+			System.out.println("Wrong key!");
+		}catch (InvalidHmacException e) {
 			System.out.println("Wrong key!");
 		}
     }

@@ -39,6 +39,13 @@ public class HistoryData {
 	}
 	
 	/**
+	 * @return number of feature vectors in HistoryData object
+	 */
+	public int numEntries(){
+		return history.size();
+	}
+	
+	/**
 	 * Creates new HistoryData object from successfully
 	 * decrypted history file data.
 	 * @param data decrypted contents
@@ -200,5 +207,21 @@ public class HistoryData {
 		}
 		
 		return data;
+	}
+	
+	/**
+	 * @param feature index
+	 * @return mean of feature value
+	 */
+	public double getMean(int index){
+		return 0;
+	}
+	
+	/**
+	 * @param feature index
+	 *@return standard deviation of feature value
+	 */
+	public double getStandardDeviation(int index){
+		return 0;
 	}
 }
