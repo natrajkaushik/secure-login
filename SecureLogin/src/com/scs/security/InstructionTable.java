@@ -52,8 +52,10 @@ public class InstructionTable {
 			Position position = positions[i];
 			
 			int index = i + 1;
-			BigDecimal alpha = poly.evaluate(new BigDecimal(Authenticator.p_function.execute(2 * index)));
-			BigDecimal beta = poly.evaluate(new BigDecimal(Authenticator.p_function.execute(2 * index + 1)));
+			BigDecimal alpha = poly.evaluate(new BigDecimal(Authenticator.p_function.execute(2 * index)))
+					.add(new BigDecimal(Authenticator.g_function.execute(2 * index)));
+			BigDecimal beta = poly.evaluate(new BigDecimal(Authenticator.p_function.execute(2 * index + 1)))
+					.add(new BigDecimal(Authenticator.g_function.execute(2 * index + 1)));
 			
 			switch (position) {
 			case ALPHA:

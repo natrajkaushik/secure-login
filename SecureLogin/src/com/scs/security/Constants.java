@@ -35,8 +35,8 @@ public class Constants {
 	 */
 	public static final String TOTEM = "BECOOLHONEYBUNNY";
 	
-	public static final String HISTORY_FILE_PATH = "";
-	public static final String INSTRUCTION_TABLE_FILE_PATH = "";
+	public static final String HISTORY_FILE_PATH = "./res/history";
+	public static final String INSTRUCTION_TABLE_FILE_PATH = "./res/itable";
 	
 	// public static final BigInteger Q = Generator.LARGE_PRIME;
 	public static final BigInteger Q = new BigInteger(

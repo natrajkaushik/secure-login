@@ -2,6 +2,8 @@ package com.scs.security;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,9 +76,11 @@ public class Polynomial {
 		BigDecimal sum = new BigDecimal("0");
 		for(int i = 0; i < points.size(); i++){
 			BigDecimal lambda = getLambda(xValues, i);
+			System.out.println(lambda);
 			sum = sum.add(yValues.get(i).multiply(lambda));
 		}
 		
+		System.out.println(sum);
 		BigInteger result = sum.toBigInteger().mod(Constants.Q); /* this can cause trouble */
 		
 		return result;
@@ -89,7 +93,7 @@ public class Polynomial {
 		for(int i = 0; i < xValues.size(); i++){
 			BigDecimal current = xValues.get(i); 
 			if(i != index){
-				result = result.multiply(current.divide(current.subtract(xValues.get(index))));
+				result = result.multiply(current.divide(current.subtract(xValues.get(index)), 100, RoundingMode.HALF_UP));
 			}
 		}
 		

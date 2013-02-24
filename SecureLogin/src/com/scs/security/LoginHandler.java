@@ -70,6 +70,7 @@ public class LoginHandler {
 	}
 	
 	public static void main(String[] args){
+		//Authenticator.reset();
 		LoginHandler lHandler = getLoginHandler();
 		if(Authenticator.isSchemeInitialized()){
 			boolean check = lHandler.authenticate();

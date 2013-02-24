@@ -27,6 +27,11 @@ public class Authenticator {
 		return Boolean.valueOf(LoginHandler.getPreferences().get(Constants.PREF_INITIALIZED, "false"));
 	}
 	
+	/* reset the scheme */
+	public static void reset(){
+		LoginHandler.getPreferences().put(Constants.PREF_INITIALIZED, "false");
+	}
+	
 	private static void initFunctions(String password){
 		try {
 			p_function = new P_Function(Generator.R);
@@ -47,7 +52,11 @@ public class Authenticator {
 		Position[] positions = new Position[Constants.M];
 		Arrays.fill(positions, Position.BOTH);
 		BigInteger hpwd = Generator.getHPWD(Constants.Q);
+		System.out.println(hpwd);	
 		initFunctions(password);
+		
+		HistoryData histData = new HistoryData();
+		histData.persist(new File(Constants.HISTORY_FILE_PATH), hpwd);
 		generateScheme(hpwd, positions);
 		
 		LoginHandler.getPreferences().put(Constants.PREF_INITIALIZED, "true");
@@ -63,6 +72,7 @@ public class Authenticator {
 	private static boolean _authenticate(String password, long[] features) {
 		initFunctions(password);
 		BigInteger hpwd = extractHardenedPwd(features, password);
+		System.out.println(hpwd);
 
 		File historyFile = new File(Constants.HISTORY_FILE_PATH);
 
