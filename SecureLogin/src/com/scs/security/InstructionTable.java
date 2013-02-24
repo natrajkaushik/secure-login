@@ -48,18 +48,22 @@ public class InstructionTable {
 			
 			int index = i + 1;
 			BigInteger alpha = poly.evaluate(Authenticator.p_function.execute(2 * index))
-					.add(Authenticator.g_function.execute(2 * index));
+					.add(Authenticator.g_function.execute(2 * index).mod(Constants.Q));
 			BigInteger beta = poly.evaluate(Authenticator.p_function.execute(2 * index + 1))
-					.add(Authenticator.g_function.execute(2 * index + 1));
+					.add(Authenticator.g_function.execute(2 * index + 1).mod(Constants.Q));
+
+//			System.out.println("IT: " + alpha + " , " + beta);
 			
-			System.out.println(Authenticator.p_function.execute(2 * index) + " , " + poly.evaluate(Authenticator.p_function.execute(2 * index)));
+			// System.out.println(Authenticator.p_function.execute(2 * index) + " , " + poly.evaluate(Authenticator.p_function.execute(2 * index)));
 			
 			switch (position) {
 			case ALPHA:
 				beta = Generator.getRandomBigInteger();
+				System.out.println("Beta " + (i+1) + " corrupted!");
 				break;
 			case BETA:
 				alpha = Generator.getRandomBigInteger();
+				System.out.println("Alpha " + (i+1) + " corrupted!");
 				break;
 			case BOTH:
 				break;
@@ -70,8 +74,8 @@ public class InstructionTable {
 		return iTable;
 	}
 
-	public static Position getPosition(long feature) {
-		return Position.ALPHA;
+	public static Position getPosition(long feature, int index) {
+		return (feature < Constants.THRESHOLD_FEATURE_VALUES[index]) ? Position.ALPHA : Position.BETA;
 	}
 
 	public boolean addEntry(InstructionTableEntry entry) {

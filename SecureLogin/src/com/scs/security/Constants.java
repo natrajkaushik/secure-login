@@ -27,7 +27,12 @@ public class Constants {
 	/**
 	 * Number of previous successful logins stored
 	 */
-	public static final int H = 10;
+	public static final int H = 4;
+	
+	/**
+	 * System parameter to determine width of non-distinguishing range
+	 */
+	public static final double K = 1;
 
 	/**
 	 * String written to history file to know if decryption was successful or

@@ -58,13 +58,6 @@ public class LoginHandler {
 		return Authenticator.initScheme(password);
 	}
 	
-	/* display features - test method */
-	private void displayFeatures(){
-		for(int i = 0; i < features.length; i++){
-			System.out.println(features[i]);
-		}
-	}
-	
 	public static LoginHandler getLoginHandler(){
 		return new LoginHandler();
 	}
@@ -72,17 +65,16 @@ public class LoginHandler {
 	public static void main(String[] args){
 //		Authenticator.reset();
 		LoginHandler lHandler = getLoginHandler();
-		if(Authenticator.isSchemeInitialized()){
+		if (Authenticator.isSchemeInitialized()){
 			boolean check = lHandler.authenticate();
 			if(check){
 				System.out.println("You have been successfully authenticated");
 			}else{
 				System.out.println("Good try but sorry :P");
 			}
-		}else{
+		} else{
 			lHandler.initScheme();
 			System.out.println("Password successfully setup !!");
 		}
 	}
-	
 }

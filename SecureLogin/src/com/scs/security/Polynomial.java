@@ -63,7 +63,6 @@ public class Polynomial {
 			lambda_i = getLambda(points, i);
 			sum = sum.add(points.get(i).y.multiply(lambda_i).mod(Constants.Q)).mod(Constants.Q);
 		}
-		
 		return sum;
 	}
 	
