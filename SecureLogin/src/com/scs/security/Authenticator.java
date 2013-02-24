@@ -1,7 +1,6 @@
 package com.scs.security;
 
 import java.io.File;
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -42,7 +41,6 @@ public class Authenticator {
 		try {
 			g_function = new G_Function(Generator.R, password);
 		} catch (CryptoException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -99,24 +97,24 @@ public class Authenticator {
 
 		for (int i = 0; i < features.length; i++) {
 			int index = iTable.get(i).getIndex();
-			BigDecimal x = null, y = null;
+			BigInteger x = null, y = null;
 
 			switch (InstructionTable.getPosition(features[i])) {
 			case ALPHA:
 			case BOTH:
-				x = new BigDecimal(p_function.execute(2 * index));
-				y = iTable.get(i).getAlpha().subtract(new BigDecimal(g_function.execute(2 * index)));
+				x = p_function.execute(2 * index);
+				y = iTable.get(i).getAlpha().subtract(g_function.execute(2 * index));
 				break;
 			case BETA:
-				x = new BigDecimal(p_function.execute(2 * index + 1));
-				y = iTable.get(i).getBeta().subtract(new BigDecimal(g_function.execute(2 * index + 1)));
+				x = p_function.execute(2 * index + 1);
+				y = iTable.get(i).getBeta().subtract(g_function.execute(2 * index + 1));
 				break;
 			}
+			System.out.println(x + " , " + y);
 			points.add(new Point(x, y));
 		}
 
-		BigInteger hpwd = Polynomial
-				.generateZerothCoefficientFromPoints(points);
+		BigInteger hpwd = Polynomial.generateZerothCoefficientFromPoints(points);
 		return hpwd;
 	}
 	

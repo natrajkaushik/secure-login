@@ -1,6 +1,5 @@
 package com.scs.security;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Random;
 
@@ -24,8 +23,8 @@ public class Generator {
 		return getRandomInteger(BIT_LENGTH).mod(Q);
 	}
 	
-	public static BigDecimal getRandomBigDecimal(){
-		return new BigDecimal(getRandomInteger(BIT_LENGTH).mod(Constants.Q));
+	public static BigInteger getRandomBigInteger(){
+		return getRandomInteger(BIT_LENGTH).mod(Constants.Q);
 	}
 	
 	private static BigInteger getR(){

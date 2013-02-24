@@ -39,7 +39,7 @@ public class Constants {
 	public static final String INSTRUCTION_TABLE_FILE_PATH = "./res/itable";
 	
 	// public static final BigInteger Q = Generator.LARGE_PRIME;
-	public static final BigInteger Q = new BigInteger(
+	public static final BigInteger Q = new BigInteger(//"123457");
 			"33517498807111931132048208632861495510865379385111444454915448545807671489023");
 	
 	

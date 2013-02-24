@@ -1,14 +1,12 @@
 package com.scs.security;
 
-import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.scs.security.functions.P_Function;
-
 public class InstructionTable {
-	private List<InstructionTableEntry> entries = new ArrayList<InstructionTableEntry>(
-			Constants.M); /* Instruction Table */
+	/* Instruction Table */
+	private List<InstructionTableEntry> entries = new ArrayList<InstructionTableEntry>(Constants.M);
 
 	public enum Position {
 		ALPHA, BETA, BOTH;
@@ -19,13 +17,11 @@ public class InstructionTable {
 		final InstructionTable iTable = new InstructionTable();
 
 		IOUtils.readFile(filePath, new IOUtils.Callback() {
-			@Override
 			public void processLine(String data) {
 				/* each line in the instruction table has "i alpha(i) beta(i)" */
 				String[] tokens = data.split("\\s+");
-				InstructionTableEntry entry = new InstructionTableEntry(Integer
-						.valueOf(tokens[0]), new BigDecimal(tokens[1]),
-						new BigDecimal(tokens[2]));
+				InstructionTableEntry entry = new InstructionTableEntry(
+						Integer.valueOf(tokens[0]), new BigInteger(tokens[1]), new BigInteger(tokens[2]));
 				iTable.addEntry(entry);
 			}
 		});
@@ -37,8 +33,7 @@ public class InstructionTable {
 	public void writeToFile(String filePath){
 		List<String> lines = new ArrayList<String>(entries.size());
 		for (InstructionTableEntry ite : entries) {
-			String entry = new String(ite.getIndex() + " " + ite.getAlpha()
-					+ " " + ite.getBeta());
+			String entry = new String(ite.getIndex() + " " + ite.getAlpha() + " " + ite.getBeta());
 			lines.add(entry);
 		}
 		IOUtils.writeToFile(lines, filePath);
@@ -52,24 +47,23 @@ public class InstructionTable {
 			Position position = positions[i];
 			
 			int index = i + 1;
-			BigDecimal alpha = poly.evaluate(new BigDecimal(Authenticator.p_function.execute(2 * index)))
-					.add(new BigDecimal(Authenticator.g_function.execute(2 * index)));
-			BigDecimal beta = poly.evaluate(new BigDecimal(Authenticator.p_function.execute(2 * index + 1)))
-					.add(new BigDecimal(Authenticator.g_function.execute(2 * index + 1)));
+			BigInteger alpha = poly.evaluate(Authenticator.p_function.execute(2 * index))
+					.add(Authenticator.g_function.execute(2 * index));
+			BigInteger beta = poly.evaluate(Authenticator.p_function.execute(2 * index + 1))
+					.add(Authenticator.g_function.execute(2 * index + 1));
+			
+			System.out.println(Authenticator.p_function.execute(2 * index) + " , " + poly.evaluate(Authenticator.p_function.execute(2 * index)));
 			
 			switch (position) {
 			case ALPHA:
-				beta = Generator.getRandomBigDecimal();
+				beta = Generator.getRandomBigInteger();
 				break;
-				
 			case BETA:
-				alpha = Generator.getRandomBigDecimal();
+				alpha = Generator.getRandomBigInteger();
 				break;
-				
 			case BOTH:
 				break;
 			}
-			
 			iTable.addEntry(new InstructionTableEntry(index, alpha, beta));
 		}
 
@@ -87,15 +81,14 @@ public class InstructionTable {
 	public InstructionTableEntry get(int i) {
 		return entries.get(i);
 	}
-
 }
 
 class InstructionTableEntry {
-	private int index; /* feature index 1 to m */
-	private BigDecimal alpha; /* alpha entry for feature */
-	private BigDecimal beta; /* beta entry for feature */
+	private int index;			/* feature index 1 to m */
+	private BigInteger alpha;	/* alpha entry for feature */
+	private BigInteger beta;	/* beta entry for feature */
 
-	public InstructionTableEntry(int index, BigDecimal alpha, BigDecimal beta) {
+	public InstructionTableEntry(int index, BigInteger alpha, BigInteger beta) {
 		this.index = index;
 		this.alpha = alpha;
 		this.beta = beta;
@@ -109,19 +102,19 @@ class InstructionTableEntry {
 		this.index = index;
 	}
 
-	public BigDecimal getAlpha() {
+	public BigInteger getAlpha() {
 		return alpha;
 	}
 
-	public void setAlpha(BigDecimal alpha) {
+	public void setAlpha(BigInteger alpha) {
 		this.alpha = alpha;
 	}
 
-	public BigDecimal getBeta() {
+	public BigInteger getBeta() {
 		return beta;
 	}
 
-	public void setBeta(BigDecimal beta) {
+	public void setBeta(BigInteger beta) {
 		this.beta = beta;
 	}
 }

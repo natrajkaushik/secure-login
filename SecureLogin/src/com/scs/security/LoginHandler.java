@@ -26,7 +26,7 @@ public class LoginHandler {
 		
 		String answer;
 		for(int i = 0; i < Constants.QUESTIONS.length; i++){
-			System.out.println(Constants.QUESTIONS[i]);
+			System.out.print(Constants.QUESTIONS[i] + " ");
 			answer = IOUtils.readFromConsole();
 			if(answer == null || answer.isEmpty()){
 				features[i] = Constants.THRESHOLD_FEATURE_VALUES[i];
@@ -70,7 +70,7 @@ public class LoginHandler {
 	}
 	
 	public static void main(String[] args){
-		//Authenticator.reset();
+//		Authenticator.reset();
 		LoginHandler lHandler = getLoginHandler();
 		if(Authenticator.isSchemeInitialized()){
 			boolean check = lHandler.authenticate();
