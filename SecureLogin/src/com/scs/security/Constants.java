@@ -41,5 +41,8 @@ public class Constants {
 	// public static final BigInteger Q = Generator.LARGE_PRIME;
 	public static final BigInteger Q = new BigInteger(
 			"33517498807111931132048208632861495510865379385111444454915448545807671489023");
-	public static final BigInteger R = Generator.RANDOM_SEED;
+	
+	
+	public static final String PREF_INITIALIZED = "com.scs.security.initialized";
+	public static final String PREF_R = "com.scs.security.R";
 }

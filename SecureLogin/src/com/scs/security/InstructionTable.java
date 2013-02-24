@@ -34,9 +34,9 @@ public class InstructionTable {
 	}
 
 	/* write the Instruction Table to a file */
-	public static void writeTableToFile(InstructionTable iTable, String filePath) {
-		List<String> lines = new ArrayList<String>(iTable.entries.size());
-		for (InstructionTableEntry ite : iTable.entries) {
+	public void writeToFile(String filePath){
+		List<String> lines = new ArrayList<String>(entries.size());
+		for (InstructionTableEntry ite : entries) {
 			String entry = new String(ite.getIndex() + " " + ite.getAlpha()
 					+ " " + ite.getBeta());
 			lines.add(entry);

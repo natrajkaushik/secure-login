@@ -6,8 +6,8 @@ import java.util.Random;
 
 public class Generator {
 	public static final int BIT_LENGTH = 256;
-	public static final BigInteger LARGE_PRIME = getLargePrime(BIT_LENGTH);
-	public static final BigInteger RANDOM_SEED = getRandomInteger(BIT_LENGTH);
+	public static BigInteger R = getR();
+	public static final String ZERO = "0";
 	
 	/* returns a large prime of specified bit length */
 	public static BigInteger getLargePrime(int bitLength){
@@ -28,9 +28,17 @@ public class Generator {
 		return new BigDecimal(getRandomInteger(BIT_LENGTH).mod(Constants.Q));
 	}
 	
+	private static BigInteger getR(){
+		BigInteger random;
+		String retrieved = LoginHandler.getPreferences().get(Constants.PREF_R, ZERO);
+		random = ZERO.equals(retrieved) ? getRandomInteger(BIT_LENGTH): new BigInteger(retrieved);
+		return random;
+	}
+	
 	public static void main(String[] args){
-		BigInteger hpwd = Generator.getHPWD(LARGE_PRIME);
+		BigInteger hpwd = Generator.getHPWD(Constants.Q);
 		System.out.println(hpwd);
-		System.out.println(Generator.LARGE_PRIME);
+		System.out.println(Constants.Q);
+		System.out.println(R);
 	}
 }

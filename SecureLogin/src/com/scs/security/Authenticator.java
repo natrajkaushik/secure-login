@@ -14,46 +14,54 @@ import com.scs.security.misc.CryptoException;
 
 public class Authenticator {
 
-	public static P_Function p_function;
+	public static P_Function p_function = null;
 	public static G_Function g_function = null;
-	private static boolean INITIALIZED = false;
 
-	/* statically initialize p_function */
-	static {
+	/* Handle two workflows - 1) First time login 2) nth time login (n > 1) */
+	public static boolean authenticate(String password, long[] features){
+		return _authenticate(password, features);
+	}
+	
+	/* check if password scheme is initialized */
+	public static boolean isSchemeInitialized(){
+		return Boolean.valueOf(LoginHandler.getPreferences().get(Constants.PREF_INITIALIZED, "false"));
+	}
+	
+	private static void initFunctions(String password){
 		try {
-			p_function = new P_Function(Constants.R);
+			p_function = new P_Function(Generator.R);
 		} catch (CryptoException e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			g_function = new G_Function(Generator.R, password);
+		} catch (CryptoException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
-	/* Handle two workflows - 1) First time login 2) nth time login (n > 1) */
-	public static boolean _authenticate(String password, long[] features){
-		if(!INITIALIZED){
-			
-		}else{
-			
-		}
+	/* Initialize scheme for first time login */
+	public static boolean initScheme(String password){
+		Position[] positions = new Position[Constants.M];
+		Arrays.fill(positions, Position.BOTH);
+		BigInteger hpwd = Generator.getHPWD(Constants.Q);
+		initFunctions(password);
+		generateScheme(hpwd, positions);
 		
-		return authenticate(password, features);
+		LoginHandler.getPreferences().put(Constants.PREF_INITIALIZED, "true");
+		return true;
 	}
 
 	/**
 	 * 
 	 * @param password
-	 * @param current login attempt features
+	 * @param features : array of current login features
 	 * @return true if successfully authenticated
 	 */
-	public static boolean authenticate(String password, long[] features) {
-		if (g_function == null) {
-			try {
-				g_function = new G_Function(Constants.R, password);
-			} catch (CryptoException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-
+	private static boolean _authenticate(String password, long[] features) {
+		initFunctions(password);
 		BigInteger hpwd = extractHardenedPwd(features, password);
 
 		File historyFile = new File(Constants.HISTORY_FILE_PATH);
@@ -72,7 +80,7 @@ public class Authenticator {
 		return true;
 	}
 
-	/* determines polynomial from feature vector and password */
+	/* extracts hardened password from feature vector and password */
 	private static BigInteger extractHardenedPwd(long[] features,
 			String password) {
 		List<Point> points = new LinkedList<Point>();
@@ -128,10 +136,13 @@ public class Authenticator {
 		return positions;
 	}
 	
-	/* generate a new 1) Random Polynomial 2) Instruction Table and persist it to disk */
+	/* generate a new 1) Random Polynomial 2) R value 3) Instruction Table and persist it to disk */
 	private static void generateScheme(BigInteger hpwd, Position[] positions){
 		Polynomial newPoly = Polynomial.getRandomPolynomial(Constants.M - 1, hpwd);
+		Generator.R = Generator.getRandomInteger(Generator.BIT_LENGTH);
+		LoginHandler.getPreferences().put(Constants.PREF_R, Generator.R.toString());
+		
 		InstructionTable iTable = InstructionTable.generateInstructionTable(positions, newPoly);
-		InstructionTable.writeTableToFile(iTable, Constants.INSTRUCTION_TABLE_FILE_PATH);
+		iTable.writeToFile(Constants.INSTRUCTION_TABLE_FILE_PATH);
 	}
 }
