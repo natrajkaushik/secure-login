@@ -1,7 +1,6 @@
 package com.scs.security;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -99,38 +98,38 @@ public class Polynomial {
 		return numer.multiply(denom.modInverse(Constants.Q)).mod(Constants.Q);
 	}
 
-	public void display() {
-		System.out.print(zerothCoefficient);
-		for (int i = 1; i <= degree; i++) {
-				System.out.print("  +  " + coefficients[i] + " * x^" + i);
-		}
-		System.out.println();
-	}
+//	public void display() {
+//		System.out.print(zerothCoefficient);
+//		for (int i = 1; i <= degree; i++) {
+//				System.out.print("  +  " + coefficients[i] + " * x^" + i);
+//		}
+//		System.out.println();
+//	}
 	
 	public static Point getPoint(BigInteger x, BigInteger y) {
 		Point p = new Point(x, y);
 		return p;
 	}
 
-	public static void main(String[] args) {
-		int degree = 50;
-		
-		BigInteger hpwd = new BigInteger(256, new Random()).mod(Constants.Q);
-		Polynomial p = Polynomial.getRandomPolynomial(degree, hpwd);
-		p.display();
-		
-		List<Point> points = new ArrayList<Point>(degree);
-		for (int i = 1; i <= degree+1; i++) {
-			BigInteger x = new BigInteger(Generator.BIT_LENGTH, new Random()).mod(Constants.Q);
-			BigInteger y = p.evaluate(x);
-			points.add(new Point(x, y));
-			System.out.println("( " + x + " , " + y + " )");
-		}
-		
-		BigInteger z = generateZerothCoefficientFromPoints(points);
-		System.out.println(z);
-		System.out.println(hpwd.equals(z) ? "\nGood!" : "\nBad!");
-	}
+//	public static void main(String[] args) {
+//		int degree = 50;
+//		
+//		BigInteger hpwd = new BigInteger(256, new Random()).mod(Constants.Q);
+//		Polynomial p = Polynomial.getRandomPolynomial(degree, hpwd);
+//		p.display();
+//		
+//		List<Point> points = new ArrayList<Point>(degree);
+//		for (int i = 1; i <= degree+1; i++) {
+//			BigInteger x = new BigInteger(Generator.BIT_LENGTH, new Random()).mod(Constants.Q);
+//			BigInteger y = p.evaluate(x);
+//			points.add(new Point(x, y));
+//			System.out.println("( " + x + " , " + y + " )");
+//		}
+//		
+//		BigInteger z = generateZerothCoefficientFromPoints(points);
+//		System.out.println(z);
+//		System.out.println(hpwd.equals(z) ? "\nGood!" : "\nBad!");
+//	}
 }
 
 class Point {

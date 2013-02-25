@@ -101,6 +101,7 @@ public class Authenticator {
 			return false;
 		}
 
+		historyData.addEntry(features);
 		Position[] positions = computeDistFeatures(historyData);
 		
 		historyData.persist(historyFile, hpwd);
@@ -150,17 +151,17 @@ public class Authenticator {
 	private static Position[] computeDistFeatures(HistoryData histData){
 		Position[] positions = new Position[Constants.M];
 		
-		if(histData == null || histData.numEntries() < Constants.H){
+		if(histData == null || histData.numEntries() < Constants.H) {
 			Arrays.fill(positions, Position.BOTH); /* If num of entries in history file < 10 */
-		}else{
+		} else {
 			double mean, sd;
 			for(int i = 0; i < Constants.M; i++){
 				mean = histData.getMean(i);
 				sd = histData.getStandardDeviation(i);
-				if ((Constants.THRESHOLD_FEATURE_VALUES[i] - (Constants.K * sd)) >= mean) {
+				if ((Constants.THRESHOLD_FEATURE_VALUES[i] - (Constants.K * sd)) > mean) {
 					positions[i] = Position.ALPHA;
 				}
-				else if ((Constants.THRESHOLD_FEATURE_VALUES[i] + (Constants.K * sd)) <= mean) {
+				else if ((Constants.THRESHOLD_FEATURE_VALUES[i] + (Constants.K * sd)) < mean) {
 					positions[i] = Position.BETA;
 				}
 				else {

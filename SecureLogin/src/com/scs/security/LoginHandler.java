@@ -57,7 +57,9 @@ public class LoginHandler {
 				try{
 					features[i] = Long.valueOf(answer);
 				}catch(NumberFormatException e){
-					features[i] = Constants.THRESHOLD_FEATURE_VALUES[i];;
+					// features[i] = Constants.THRESHOLD_FEATURE_VALUES[i];
+					System.err.println("Invalid feature value!");
+					System.exit(-1);
 				}
 			}
 		}
@@ -96,9 +98,9 @@ public class LoginHandler {
 		if (Authenticator.isSchemeInitialized()){
 			boolean check = lHandler.authenticate();
 			if(check){
-				System.out.println("You have been successfully authenticated");
+				System.out.println("You have been successfully authenticated!");
 			}else{
-				System.out.println("Good try but sorry :P");
+				System.out.println("Authentication failed!");
 			}
 		} else{
 			lHandler.initScheme();

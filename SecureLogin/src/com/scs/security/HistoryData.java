@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Random;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
@@ -19,9 +18,9 @@ import com.scs.security.misc.InvalidHmacException;
 
 public class HistoryData {
 	
-	private static final String FILE_WRITE_ERR 	= "Error writing to file!";
-	private static final String FILE_READ_ERR 	= "Error reading from file!";
-	private static final String ENC_FAIL_ERR 	= "Encryption failed! %s\nFile not saved.\n";
+	private static final String FILE_WRITE_ERR 	= "Error writing to history file!";
+	private static final String FILE_READ_ERR 	= "Error reading from history file!";
+	private static final String ENC_FAIL_ERR 	= "Encryption failed! %s\nHistory file not saved.\n";
 	private static final String DEC_FAIL_ERR 	= "Decryption failed! %s\n";
 	private static final String VALID_ERR 		= "Validation failed! Invalid hardened password.";
 	private static final String CORRUPT_ERR		= "History data corrupted!";
@@ -249,64 +248,64 @@ public class HistoryData {
 		return stats[index].getStandardDeviation();
 	}
 	
-	public static void main(String args[]) {
-		File file1 = new File("C:\\Users\\Sameer\\Desktop\\history1.file");
-		BigInteger b = new BigInteger(255, new Random());
-		Random r = new Random(System.currentTimeMillis());
-		long[] first = {1, 2, 3, 4, 5, 6};
-		long[][] val = new long[12][6];
-		System.out.println("0:\t1	2	3	4	5	6");
-		for (int i = 0; i < 12; i++) {
-			System.out.print(i+1 + ":\t");
-			for (int j = 0; j < 6; j++) {
-				val[i][j] = Math.abs(r.nextLong()) % 100;
-				System.out.print(val[i][j] + "\t");
-			}
-			System.out.println();
-		}
-		System.out.println();
-		HistoryData h = new HistoryData(first);
-		for (int i = 0; i < 5; i++) {
-			h.addEntry(val[i]);
-		}
-		h.persist(file1, b);
-		
-		System.out.println("Read 1:");
-		HistoryData l = HistoryData.loadHistory(file1, b);
-		if (l != null) {
-			l.print();
-		}
-		
-		for (int i = 5; i < 12; i++) {
-			l.addEntry(val[i]);
-		}
-		l.persist(file1, b);
-		
-		System.out.println("Read 2:");
-		HistoryData d = HistoryData.loadHistory(file1, b);
-		if (d != null) {
-			d.print();
-		}
-	}
+//	public static void main(String args[]) {
+//		File file1 = new File("history1.file");
+//		BigInteger b = new BigInteger(255, new Random());
+//		Random r = new Random(System.currentTimeMillis());
+//		long[] first = {1, 2, 3, 4, 5, 6};
+//		long[][] val = new long[12][6];
+//		System.out.println("0:\t1	2	3	4	5	6");
+//		for (int i = 0; i < 12; i++) {
+//			System.out.print(i+1 + ":\t");
+//			for (int j = 0; j < 6; j++) {
+//				val[i][j] = Math.abs(r.nextLong()) % 100;
+//				System.out.print(val[i][j] + "\t");
+//			}
+//			System.out.println();
+//		}
+//		System.out.println();
+//		HistoryData h = new HistoryData(first);
+//		for (int i = 0; i < 5; i++) {
+//			h.addEntry(val[i]);
+//		}
+//		h.persist(file1, b);
+//		
+//		System.out.println("Read 1:");
+//		HistoryData l = HistoryData.loadHistory(file1, b);
+//		if (l != null) {
+//			l.print();
+//		}
+//		
+//		for (int i = 5; i < 12; i++) {
+//			l.addEntry(val[i]);
+//		}
+//		l.persist(file1, b);
+//		
+//		System.out.println("Read 2:");
+//		HistoryData d = HistoryData.loadHistory(file1, b);
+//		if (d != null) {
+//			d.print();
+//		}
+//	}
 	
-	public void print() {
-		int i = 0;
-		for (long[] entry : history) {
-			System.out.print(++i + ":\t");
-			for (int j = 0; j < Constants.M; j++) {
-				System.out.print(entry[j] + "\t");
-			}
-			System.out.println();
-		}
-		System.out.print("AV:\t");
-		for (int j = 0; j < Constants.M; j++) {
-			System.out.print(stats[j].getMean() + "\t");
-		}
-		System.out.println();
-		System.out.print("SD:\t");
-		for (int j = 0; j < Constants.M; j++) {
-			System.out.print(stats[j].getStandardDeviation() + "\t");
-		}
-		System.out.println();
-	}
+//	public void print() {
+//		int i = 0;
+//		for (long[] entry : history) {
+//			System.out.print(++i + ":\t");
+//			for (int j = 0; j < Constants.M; j++) {
+//				System.out.print(entry[j] + "\t");
+//			}
+//			System.out.println();
+//		}
+//		System.out.print("AV:\t");
+//		for (int j = 0; j < Constants.M; j++) {
+//			System.out.print(stats[j].getMean() + "\t");
+//		}
+//		System.out.println();
+//		System.out.print("SD:\t");
+//		for (int j = 0; j < Constants.M; j++) {
+//			System.out.print(stats[j].getStandardDeviation() + "\t");
+//		}
+//		System.out.println();
+//	}
 }

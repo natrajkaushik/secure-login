@@ -26,7 +26,8 @@ public class IOUtils {
 
 	public static void readFile(String filePath, Callback c) {
 		if (!fileExists(filePath)) {
-			return;
+			System.err.println("Instruction file is missing! Quitting...");
+			System.exit(-1);
 		}
 		BufferedReader br = null;
 
@@ -40,7 +41,7 @@ public class IOUtils {
 			}
 
 		} catch (FileNotFoundException e) {
-			System.err.println("File at [" + filePath + "] not found");
+			System.err.println("Instruction file is missing! Quitting...");
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -105,9 +106,4 @@ public class IOUtils {
 			}
 		}
 	}
-
-	public static void main(String[] args) {
-
-	}
-
 }

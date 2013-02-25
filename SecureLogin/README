@@ -1,0 +1,23 @@
+CS 6238 Secure Computer Systems
+Project 1 - SecLogin (SecureLogin)
+
+
+Authors:
+Natraj Kaushik
+Sameer Vijaykar
+
+
+System requirements:
+1. Java version 1.6 or later
+2. Apache Ant version 1.7.1 or later
+
+
+Running instructionr:
+
+1. From the directory containing this file, run the command 'ant build' to compile the code.
+2. To run the program, execute the command 'ant run' or 'sh run.sh'.
+3. To reset the password and start over again, run the command 'sh run.sh reset'
+
+
+Description:
+

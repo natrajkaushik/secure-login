@@ -6,7 +6,6 @@ import java.nio.ByteBuffer;
 import javax.crypto.Mac;
 
 import com.scs.security.Constants;
-import com.scs.security.misc.CryptoException;
 
 public class KeyedHashFunction {
 
@@ -31,16 +30,16 @@ public class KeyedHashFunction {
 		return new BigInteger(result).mod(Constants.Q);
 	}
 	
-	public static void main(String args[]) throws CryptoException {
-		BigInteger r = new BigInteger("31087632152199639543726474312338815811421477996964447378948726738683786175667");
-		String pwd = "dummy";
-		
-		System.out.println(r.bitCount() + "\t" + r.bitLength() + "\t" + r.toByteArray().length);
-		
-		KeyedHashFunction g = new G_Function(r, pwd);
-		KeyedHashFunction p = new P_Function(r);
-		
-		System.out.println(g.execute(6));
-		System.out.println(p.execute(6));
-	}
+//	public static void main(String args[]) throws CryptoException {
+//		BigInteger r = new BigInteger("31087632152199639543726474312338815811421477996964447378948726738683786175667");
+//		String pwd = "dummy";
+//		
+//		System.out.println(r.bitCount() + "\t" + r.bitLength() + "\t" + r.toByteArray().length);
+//		
+//		KeyedHashFunction g = new G_Function(r, pwd);
+//		KeyedHashFunction p = new P_Function(r);
+//		
+//		System.out.println(g.execute(6));
+//		System.out.println(p.execute(6));
+//	}
 }

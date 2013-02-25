@@ -54,10 +54,10 @@ public class Generator {
 		return random;
 	}
 	
-	public static void main(String[] args){
-		BigInteger hpwd = Generator.getHPWD(Constants.Q);
-		System.out.println(hpwd);
-		System.out.println(Constants.Q);
-		System.out.println(R);
-	}
+//	public static void main(String[] args){
+//		BigInteger hpwd = Generator.getHPWD(Constants.Q);
+//		System.out.println(hpwd);
+//		System.out.println(Constants.Q);
+//		System.out.println(R);
+//	}
 }

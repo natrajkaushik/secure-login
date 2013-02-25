@@ -51,5 +51,5 @@ public class Constants {
 	
 	public static final String PREF_INITIALIZED = "com.scs.security.initialized";
 	public static final String PREF_R = "com.scs.security.R";
-	public static final String RESET = "RESET";
+	public static final String RESET = "reset";
 }

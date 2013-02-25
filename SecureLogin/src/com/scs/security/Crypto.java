@@ -178,33 +178,33 @@ public class Crypto {
     	return key;
     }
     
-    public static void main(String args[]) throws CryptoException {
-    	BigInteger key = new BigInteger("25366482378280858928741501701207693372647019406703867885089035669716333033678");
-    	String plaintext = "Hello AES World!";
-    	
-    	System.out.println("Key: " + key);
-    	System.out.println("Plaintext: " + plaintext);
-    	
-    	byte[] enc = encrypt(plaintext.getBytes(), key);
-    	printByteArray("Ciphertext", enc);
-    	
-    	byte[] dec;
-		try {
-			dec = decrypt(enc, key);
-	    	printByteArray("Decryption", dec);
-	    	System.out.println("Plaintext: " + new String(dec));
-		} catch (CryptoException e) {
-			System.out.println("Wrong key!");
-		}catch (InvalidHmacException e) {
-			System.out.println("Wrong key!");
-		}
-    }
+//    public static void main(String args[]) throws CryptoException {
+//    	BigInteger key = new BigInteger("25366482378280858928741501701207693372647019406703867885089035669716333033678");
+//    	String plaintext = "Hello AES World!";
+//    	
+//    	System.out.println("Key: " + key);
+//    	System.out.println("Plaintext: " + plaintext);
+//    	
+//    	byte[] enc = encrypt(plaintext.getBytes(), key);
+//    	printByteArray("Ciphertext", enc);
+//    	
+//    	byte[] dec;
+//		try {
+//			dec = decrypt(enc, key);
+//	    	printByteArray("Decryption", dec);
+//	    	System.out.println("Plaintext: " + new String(dec));
+//		} catch (CryptoException e) {
+//			System.out.println("Wrong key!");
+//		}catch (InvalidHmacException e) {
+//			System.out.println("Wrong key!");
+//		}
+//    }
     
-    public static void printByteArray(String label, byte[] array) {
-    	System.out.print(label + ": ");
-    	for (int i = 0; i < array.length; i++) {
-    		System.out.printf("%02X ", array[i]);
-    	}
-    	System.out.println();
-    }
+//    public static void printByteArray(String label, byte[] array) {
+//    	System.out.print(label + ": ");
+//    	for (int i = 0; i < array.length; i++) {
+//    		System.out.printf("%02X ", array[i]);
+//    	}
+//    	System.out.println();
+//    }
 }
