@@ -44,11 +44,6 @@ public class HistoryData {
 		addEntry(features);
 	}
 	
-	public HistoryData() {
-		history = new ArrayList<long[]>();
-		initStats();
-	}
-	
 	/**
 	 * Creates new HistoryData object from successfully
 	 * decrypted history file data.

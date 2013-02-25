@@ -5,14 +5,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InstructionTable {
-	/* Instruction Table */
-	private List<InstructionTableEntry> entries = new ArrayList<InstructionTableEntry>(Constants.M);
+	private List<InstructionTableEntry> entries = new ArrayList<InstructionTableEntry>(Constants.M); /* Instruction Table Data */
 
+	/***
+	 * Represents the distinguishing nature of feature.
+	 */
 	public enum Position {
 		ALPHA, BETA, BOTH;
 	};
 
-	/* load instruction table from file */
+	/***
+	 * load instruction table from file
+	 * @param filePath
+	 * @return Instruction Table
+	 */
 	public static InstructionTable loadTable(String filePath) {
 		final InstructionTable iTable = new InstructionTable();
 
@@ -29,7 +35,10 @@ public class InstructionTable {
 		return iTable;
 	}
 
-	/* write the Instruction Table to a file */
+	/***
+	 * write the Instruction Table to a file 
+	 * @param filePath
+	 */
 	public void writeToFile(String filePath){
 		List<String> lines = new ArrayList<String>(entries.size());
 		for (InstructionTableEntry ite : entries) {
@@ -39,7 +48,12 @@ public class InstructionTable {
 		IOUtils.writeToFile(lines, filePath);
 	}
 
-	/* generate Instruction Table from distinguishing features and a randomly generated polynomial */
+	/***
+	 * generate Instruction Table from distinguishing features and a randomly generated polynomial
+	 * @param positions
+	 * @param poly polynomial
+	 * @return Instruction Table
+	 */
 	public static InstructionTable generateInstructionTable(Position[] positions, Polynomial poly) {
 		InstructionTable iTable = new InstructionTable();
 		
@@ -51,19 +65,13 @@ public class InstructionTable {
 					.add(Authenticator.g_function.execute(2 * index).mod(Constants.Q));
 			BigInteger beta = poly.evaluate(Authenticator.p_function.execute(2 * index + 1))
 					.add(Authenticator.g_function.execute(2 * index + 1).mod(Constants.Q));
-
-//			System.out.println("IT: " + alpha + " , " + beta);
-			
-			// System.out.println(Authenticator.p_function.execute(2 * index) + " , " + poly.evaluate(Authenticator.p_function.execute(2 * index)));
 			
 			switch (position) {
 			case ALPHA:
 				beta = Generator.getRandomBigInteger();
-				System.out.println("Beta " + (i+1) + " corrupted!");
 				break;
 			case BETA:
 				alpha = Generator.getRandomBigInteger();
-				System.out.println("Alpha " + (i+1) + " corrupted!");
 				break;
 			case BOTH:
 				break;
@@ -73,7 +81,13 @@ public class InstructionTable {
 
 		return iTable;
 	}
-
+	
+	/***
+	 * Classify a given user entered feature as either APLHA or BETA
+	 * @param feature
+	 * @param index
+	 * @return Position
+	 */
 	public static Position getPosition(long feature, int index) {
 		return ((feature < Constants.THRESHOLD_FEATURE_VALUES[index]) ? Position.ALPHA : Position.BETA);
 	}
@@ -87,6 +101,10 @@ public class InstructionTable {
 	}
 }
 
+/***
+ * Instruction Table Entry
+ *
+ */
 class InstructionTableEntry {
 	private int index;			/* feature index 1 to m */
 	private BigInteger alpha;	/* alpha entry for feature */

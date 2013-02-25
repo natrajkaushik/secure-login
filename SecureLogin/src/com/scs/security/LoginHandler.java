@@ -2,12 +2,12 @@ package com.scs.security;
 
 import java.util.prefs.Preferences;
 
-/* main workflow of handling user login */
+/***
+ * Handles interfacing with the user
+ */
 public class LoginHandler {
 	
-	private String password;
-	private long[] features = new long[Constants.M];
-	
+	/* preferences for the authentication system */
 	private static Preferences prefs;
 	
 	static{
@@ -18,15 +18,38 @@ public class LoginHandler {
 		return prefs;
 	}
 	
-	/* interact with the user and fetch the feature vector for the session */
-	private void getUserFeatures(){
+	
+	private String password; /* user entered password */
+	private long[] features = new long[Constants.M]; /* user entered features */
+	
+	
+	
+	/***
+	 *  interact with the user and fetch the password and feature vector for a login attempt session
+	 *  
+	 */
+	private void getUserInput(){
 		System.out.println("******** SECURE LOGIN ********");
-		System.out.print("Password : ");
+		System.out.println("Password : ");
 		password = IOUtils.readFromConsole();
-		
+		readFeatures();
+	}
+	
+	/***
+	 *  interact with the user and fetch password for scheme initialization 
+	 *  
+	 */
+	private void getSchemeInitializationInput(){
+		System.out.println("******** SECURE LOGIN SETUP ********");
+		System.out.println("Set Password : ");
+		password = IOUtils.readFromConsole();
+		readFeatures();
+	}
+	
+	private void readFeatures(){
 		String answer;
 		for(int i = 0; i < Constants.QUESTIONS.length; i++){
-			System.out.print(Constants.QUESTIONS[i] + " ");
+			System.out.println(Constants.QUESTIONS[i]);
 			answer = IOUtils.readFromConsole();
 			if(answer == null || answer.isEmpty()){
 				features[i] = Constants.THRESHOLD_FEATURE_VALUES[i];
@@ -39,31 +62,36 @@ public class LoginHandler {
 			}
 		}
 	}
-	
-	/* interact with the user and fetch password for scheme initialization */
-	private void getPassword(){
-		System.out.println("******** SECURE LOGIN SETUP ********");
-		System.out.print("Set Password : ");
-		password = IOUtils.readFromConsole();
-	}
-	
-	/* returns true if user is successfully authenticated */
+		
+	/***
+	 * @return true if user is successfully authenticated
+	 */
 	public boolean authenticate(){
-		getUserFeatures();
+		getUserInput();
 		return Authenticator.authenticate(password, features);
 	}
 	
+	/***
+	 * @return true if scheme is successfully setup
+	 */
 	public boolean initScheme(){
-		getPassword();
-		return Authenticator.initScheme(password);
+		getSchemeInitializationInput();
+		return Authenticator.initScheme(password, features);
 	}
 	
 	public static LoginHandler getLoginHandler(){
 		return new LoginHandler();
 	}
 	
+	/***
+	 * Main workflow
+	 * @param args : args[0] may contain RESET
+	 */
 	public static void main(String[] args){
-//		Authenticator.reset();
+		if(args.length > 0 && Constants.RESET.equals(args[0])){
+			/* If RESET is specified, clear the scheme preferences */
+			Authenticator.reset();
+		}
 		LoginHandler lHandler = getLoginHandler();
 		if (Authenticator.isSchemeInitialized()){
 			boolean check = lHandler.authenticate();

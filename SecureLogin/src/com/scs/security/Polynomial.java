@@ -15,7 +15,12 @@ public class Polynomial {
 									 */
 	private BigInteger zerothCoefficient;
 
-	/* generate a polynomial with randomly generated co-efficients with y(0) = hpwd */
+	/***
+	 * generate a polynomial with randomly generated co-efficients with y(0) = hpwd
+	 * @param degree
+	 * @param hpwd
+	 * @return polynomial of given degree with y(0) = hpwd
+	 */
 	public static Polynomial getRandomPolynomial(int degree, BigInteger hpwd) {
 		Polynomial p = new Polynomial(degree);
 		p.setRandomCoefficients();
@@ -26,7 +31,6 @@ public class Polynomial {
 	private void setRandomCoefficients() {
 		for (int i = 1; i <= degree; i++) {
 			this.coefficients[i] = new BigInteger(Generator.BIT_LENGTH, new Random());
-					// new BigInteger(new Long(new Random().nextLong() % LIMITER).toString()).abs();
 		}
 	}
 	
@@ -43,7 +47,11 @@ public class Polynomial {
 		this.coefficients = new BigInteger[degree + 1];
 	}
 
-	/* evaluate the polynomial for a given x */
+	/***
+	 * evaluate polynomial at given x
+	 * @param x
+	 * @return BigInteger having value y(x)
+	 */
 	public BigInteger evaluate(BigInteger x) {
 		BigInteger result = new BigInteger("0");
 		for (int i = 1; i <= degree; i++) {
@@ -54,7 +62,11 @@ public class Polynomial {
 		return result;
 	}
 	
-	/* returns zeroth coefficient of polynomial from a set of (degree + 1) points on it */
+	/***
+	 * Implementation of Lagrange Interpolation 
+	 * @param points
+	 * @return zeroth coefficient of polynomial from a set of (degree + 1) points on it
+	 */
 	public static BigInteger generateZerothCoefficientFromPoints(List<Point> points) {
 		BigInteger sum = new BigInteger("0");
 		BigInteger lambda_i = null;
@@ -67,7 +79,12 @@ public class Polynomial {
 		return sum;
 	}
 	
-	/* generates lambda values for lagrange interpolation */
+	/***
+	 * generates lambda values for lagrange interpolation
+	 * @param points List of (x,y) pairs
+	 * @param i index
+	 * @return lambda(i)
+	 */
 	private static BigInteger getLambda(List<Point> points, int i) {
 		BigInteger numer = new BigInteger("1");
 		BigInteger denom = new BigInteger("1");

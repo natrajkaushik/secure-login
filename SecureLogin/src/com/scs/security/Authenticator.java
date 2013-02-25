@@ -11,26 +11,44 @@ import com.scs.security.functions.P_Function;
 import com.scs.security.functions.G_Function;
 import com.scs.security.misc.CryptoException;
 
+/***
+ * Handles the authentication of a user as specified by the password hardening scheme 
+ */
 public class Authenticator {
 
 	public static P_Function p_function = null;
 	public static G_Function g_function = null;
 
-	/* Handle two workflows - 1) First time login 2) nth time login (n > 1) */
+	/***
+	 * 
+	 * @param password user given password
+	 * @param features user features for current session
+	 * @return true if user is authenticated
+	 */
 	public static boolean authenticate(String password, long[] features){
 		return _authenticate(password, features);
 	}
 	
-	/* check if password scheme is initialized */
+	/***
+	 * Checks if scheme is initialized
+	 * @return true is scheme is initialized
+	 */
 	public static boolean isSchemeInitialized(){
 		return Boolean.valueOf(LoginHandler.getPreferences().get(Constants.PREF_INITIALIZED, "false"));
 	}
 	
-	/* reset the scheme */
+	/***
+	 * reset the scheme by clearing the initialization flag and R value
+	 */
 	public static void reset(){
 		LoginHandler.getPreferences().put(Constants.PREF_INITIALIZED, "false");
+		LoginHandler.getPreferences().put(Constants.PREF_R, Generator.ZERO);
 	}
 	
+	/***
+	 * initializes P and G functions
+	 * @param password user given password
+	 */
 	private static void initFunctions(String password){
 		try {
 			p_function = new P_Function(Generator.R);
@@ -45,15 +63,19 @@ public class Authenticator {
 		}
 	}
 	
-	/* Initialize scheme for first time login */
-	public static boolean initScheme(String password){
+	/***
+	 * Initializes the scheme
+	 * @param password user given password
+	 * @return
+	 */
+	public static boolean initScheme(String password, long[] features){
 		Position[] positions = new Position[Constants.M];
-		Arrays.fill(positions, Position.BOTH);
-		BigInteger hpwd = Generator.getHPWD(Constants.Q);
-		System.out.println(hpwd);	
+		Arrays.fill(positions, Position.BOTH); /* Initially both Alpha and Beta positions are filled with correct entries */
+		BigInteger hpwd = Generator.getHPWD(Constants.Q); /* generate a random hardened password */
+	
 		initFunctions(password);
 		
-		HistoryData histData = new HistoryData();
+		HistoryData histData = new HistoryData(features);
 		histData.persist(new File(Constants.HISTORY_FILE_PATH), hpwd);
 		generateScheme(hpwd, positions, password);
 		
@@ -68,11 +90,9 @@ public class Authenticator {
 	 * @return true if successfully authenticated
 	 */
 	private static boolean _authenticate(String password, long[] features) {
-//		System.out.println("R at usage : " + Generator.R);
 		initFunctions(password);
 		
 		BigInteger hpwd = extractHardenedPwd(features, password);
-		System.out.println(hpwd);
 
 		File historyFile = new File(Constants.HISTORY_FILE_PATH);
 
@@ -81,7 +101,6 @@ public class Authenticator {
 			return false;
 		}
 
-		System.out.println("Stored: " + historyData.addEntry(features));
 		Position[] positions = computeDistFeatures(historyData);
 		
 		historyData.persist(historyFile, hpwd);
@@ -90,7 +109,12 @@ public class Authenticator {
 		return true;
 	}
 
-	/* extracts hardened password from feature vector and password */
+	/***
+	 * extracts hardened password from features and password
+	 * @param features
+	 * @param password
+	 * @return hardened password
+	 */
 	private static BigInteger extractHardenedPwd(long[] features,
 			String password) {
 		List<Point> points = new LinkedList<Point>();
@@ -99,8 +123,6 @@ public class Authenticator {
 		for (int i = 0; i < features.length; i++) {
 			int index = iTable.get(i).getIndex();
 			BigInteger x = null, y = null;
-
-//			System.out.println("AU: " + iTable.get(i).getAlpha() + " , " + iTable.get(i).getBeta());
 			
 			switch (InstructionTable.getPosition(features[i], i)) {
 			case ALPHA:
@@ -113,7 +135,6 @@ public class Authenticator {
 				y = iTable.get(i).getBeta().subtract(g_function.execute(2 * index + 1)).mod(Constants.Q);
 				break;
 			}
-//			System.out.println(x + " , " + y);
 			points.add(new Point(x, y));
 		}
 
@@ -121,7 +142,11 @@ public class Authenticator {
 		return hpwd;
 	}
 	
-	/* computes the distinguishing features from History File Data  */
+	/***
+	 * computes the distinguishing features from History File Data
+	 * @param histData
+	 * @return Position[] containing which features are distinguishing
+	 */
 	private static Position[] computeDistFeatures(HistoryData histData){
 		Position[] positions = new Position[Constants.M];
 		
@@ -147,15 +172,24 @@ public class Authenticator {
 		return positions;
 	}
 	
-	/* generate a new 1) Random Polynomial 2) R value 3) Instruction Table and persist it to disk */
+	/***
+	 * generate password scheme either a) during initialization or b) after successful login  
+	 * @param hpwd
+	 * @param positions
+	 * @param password
+	 */
 	private static void generateScheme(BigInteger hpwd, Position[] positions, String password){
+		/* generate new random polynomial */
 		Polynomial newPoly = Polynomial.getRandomPolynomial(Constants.M - 1, hpwd);
+		
+		/* generate new R value and persist */
 		Generator.R = Generator.getRandomInteger(Generator.BIT_LENGTH);
 		LoginHandler.getPreferences().put(Constants.PREF_R, Generator.R.toString());
-//		System.out.println("R at generation : " + Generator.R);
 		
+		/* reinitialize P and G functions with new R value */
 		initFunctions(password);
 		
+		/* generate new Instruction Table and write to file */
 		InstructionTable iTable = InstructionTable.generateInstructionTable(positions, newPoly);
 		iTable.writeToFile(Constants.INSTRUCTION_TABLE_FILE_PATH);
 	}
