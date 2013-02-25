@@ -7,8 +7,8 @@
 <project basedir="." default="build" name="SecureLogin">
     <property environment="env"/>
     <property name="debuglevel" value="source,lines,vars"/>
-    <property name="target" value="1.7"/>
-    <property name="source" value="1.7"/>
+    <property name="target" value="1.6"/>
+    <property name="source" value="1.6"/>
     <path id="SecureLogin.classpath">
         <pathelement location="bin"/>
         <pathelement location="lib/commons-math3-3.1.jar"/>
@@ -26,6 +26,7 @@
     </target>
     <target depends="clean" name="cleanall"/>
     <target depends="build-subprojects,build-project" name="build"/>
+    <target depends="build,LoginHandler" name="run"/>
     <target name="build-subprojects"/>
     <target depends="init" name="build-project">
         <echo message="${ant.project.name}: ${ant.file}"/>
@@ -35,43 +36,8 @@
         </javac>
     </target>
     <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
-    <target name="Crypto">
-        <java classname="com.scs.security.Crypto" failonerror="true" fork="yes">
-            <classpath refid="SecureLogin.classpath"/>
-        </java>
-    </target>
-    <target name="Generator">
-        <java classname="com.scs.security.Generator" failonerror="true" fork="yes">
-            <classpath refid="SecureLogin.classpath"/>
-        </java>
-    </target>
-    <target name="HistoryData">
-        <java classname="com.scs.security.HistoryData" failonerror="true" fork="yes">
-            <classpath refid="SecureLogin.classpath"/>
-        </java>
-    </target>
-    <target name="KeyedHashFunction">
-        <java classname="com.scs.security.functions.KeyedHashFunction" failonerror="true" fork="yes">
-            <classpath refid="SecureLogin.classpath"/>
-        </java>
-    </target>
     <target name="LoginHandler">
         <java classname="com.scs.security.LoginHandler" failonerror="true" fork="yes">
-            <classpath refid="SecureLogin.classpath"/>
-        </java>
-    </target>
-    <target name="Polynomial">
-        <java classname="com.scs.security.Polynomial" failonerror="true" fork="yes">
-            <classpath refid="SecureLogin.classpath"/>
-        </java>
-    </target>
-    <target name="Test (1)">
-        <java classname="Test" failonerror="true" fork="yes">
-            <classpath refid="SecureLogin.classpath"/>
-        </java>
-    </target>
-    <target name="TestFinal">
-        <java classname="TestFinal" failonerror="true" fork="yes">
             <classpath refid="SecureLogin.classpath"/>
         </java>
     </target>
