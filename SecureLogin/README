@@ -12,12 +12,89 @@ System requirements:
 2. Apache Ant version 1.7.1 or later
 
 
-Running instructionr:
+Running instructions:
 
 1. From the directory containing this file, run the command 'ant build' to compile the code.
 2. To run the program, execute the command 'ant run' or 'sh run.sh'.
-3. To reset the password and start over again, run the command 'sh run.sh reset'
+3. To reset the password and start over again, run the command 'sh run.sh reset'.
 
 
 Description:
 
+We have implemented the secure login program in Java using the BigInteger library to perform cryptographic operations on large 256-bit numbers. The Apache Commons Math library has been used for computing the mean and standard deviation on rolling history data.
+
+The implementations for the functions G and P are as follows:
+
+1. G_r,pwda(x) = HMAC-SHA256 ( r xor SHA256(pwda) , x) mod q
+2. P_r(x) = HMAC-SHA256 (r , x) mod q
+
+The secure login program tests 6 features, with the threshold values as follows
+	<2, 8, 3, 20, 6, 20>
+The size of the history file is 4 to enable easy testing with changing feature values.
+
+
+Use cases:
+
+We have tested the following use cases, using the mentioned feature vectors (in the format "pwd <feature_vector>": 
+
+   Threshold values
+          <2, 8, 3, 20, 6, 20>
+
+1. Successful initialization
+	hello <1, 3, 1, 5, 2, 7>
+
+2. Learning of features
+	hello <1, 2, 2, 4, 3, 8>
+	hello <2, 3, 1, 5, 4, 8>
+	hello <2, 1, 2, 5, 4, 6>
+
+At this stage, the distinguishing features have been identified.
+
+3. Testing distinguishing features (with right password)
+	hello <1, 3, 2, 4, 4, 7>	// login successful
+	hello <2, 9, 2, 4, 5, 8>	// login fails due to feature 2
+	hello <2, 3, 7, 5, 4, 8>	// login fails due to feature 3
+	hello <1, 4, 2, 6, 3, 9>	// login successful
+
+4. Testing wrong password (with good features)
+	world <2, 3, 2, 5, 4, 8>
+
+Till this stage, feature 1 is non-distinguishing and all other features are distinguishing with the beta values being corrupted.
+
+5. Gradual transition of distinguishing feature
+	hello <3, 3, 1, 15, 4, 9>
+	hello <5, 2, 2, 18, 2, 11>
+	hello <6, 6, 1, 19, 3, 9>	// feature 4 becomes non-distinguishing
+	hello <5, 4, 2, 21, 4, 10	// feature 1 becomes distinguishing with alpha values being corrupted
+	hello <1, 3, 2, 24, 2, 10>	// login fails due to feature 1
+	hello <4, 5, 2, 23, 3, 11>
+	hello <5, 5, 1, 23, 2, 10>
+	hello <6, 4, 2, 22, 4, 8>	// feature 4 becomes distinguishing again, with alpha values being corrupted
+	hello <5, 4, 2, 18, 2, 11>	// login fails due to feature 4
+	hello <12, 4, 1, 21, 4, 7>	// login successful
+
+The login program is reset now for the next test case.
+
+6. Checking for threshold values
+	hello <2, 8, 3, 20, 6, 20>
+	hello <2, 8, 3, 20, 6, 20>
+	hello <2, 8, 3, 20, 6, 20>
+	hello <2, 8, 3, 20, 6, 20>
+	hello <2, 8, 3, 20, 6, 20>	// all features are non-distinguishing
+	hello <2, 8, 3, 20, 1, 20>	// gradually changing feature 5 values
+	hello <2, 8, 3, 20, 2, 20>
+	hello <2, 8, 3, 20, 1, 20>	// feature 5 becomes distinguishing, with beta values being corrupted
+	hello <2, 8, 3, 20, 1, 20>	// login successful
+	hello <2, 8, 3, 20, 8, 20>	// login fails
+
+7. Garbage feature vector values
+	hello <2, abc, 3, xyz, 6, 20>	// program terminates after user enters feature vector 2
+
+8. Feature values negative
+	hello <-2, 3, -1, 8, 5, 11>		// vector still valid with respect current state of instruction table
+
+9. Deletion of history file or instruction table file
+	* In this case, the program will terminate with an error message after reading the feature vector values. No additional information is revealed.
+
+10. Preference data is deleted or changed
+	* The values of R and the state of the program (initialized or not) is stored in system preferences for the program. If these values are deleted or changed, the program will fail to successfully authenticate a user since the data required to successfully decrypt the history file is lost. The program can be reset to create a new password and reinitialize the data.
