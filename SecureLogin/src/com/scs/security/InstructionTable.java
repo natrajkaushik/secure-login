@@ -75,7 +75,7 @@ public class InstructionTable {
 	}
 
 	public static Position getPosition(long feature, int index) {
-		return (feature < Constants.THRESHOLD_FEATURE_VALUES[index]) ? Position.ALPHA : Position.BETA;
+		return ((feature < Constants.THRESHOLD_FEATURE_VALUES[index]) ? Position.ALPHA : Position.BETA);
 	}
 
 	public boolean addEntry(InstructionTableEntry entry) {

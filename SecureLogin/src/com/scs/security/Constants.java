@@ -30,7 +30,7 @@ public class Constants {
 	public static final int H = 4;
 	
 	/**
-	 * System parameter to determine width of non-distinguishing range
+	 * 
 	 */
 	public static final double K = 1;
 
